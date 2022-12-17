@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Manufacturer {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  discs     Disc[]
+  plastics  Plastic[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Disc {
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  speed          Int
+  glide          Int
+  turn           Int
+  fade           Int
+  maxWeight      Int
+  height         Float
+  diameter       Float
+  rimWidth       Float
+  rimDepth       Float
+  manufacturerId String       @db.ObjectId
+  manufacturer   Manufacturer @relation(fields: [manufacturerId], references: [id])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model Plastic {
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  manufacturerId String       @db.ObjectId
+  manufacturer   Manufacturer @relation(fields: [manufacturerId], references: [id])
+}
